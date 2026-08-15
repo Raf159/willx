@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects Manager Login — Willx Technologies</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="assets/api.js" defer></script>
+
+  <style>
+    .grid-pattern {
+      background-image: linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+  </style>
+</head>
+<body class="relative bg-white text-slate-900 font-sans antialiased min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-emerald-500 selection:text-white">
+
+  <!-- ================= BACKGROUND INTERACTIVE CANVAS ================= -->
+  <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
+  <canvas id="login-network-canvas" class="fixed inset-0 w-full h-full pointer-events-auto z-0"></canvas>
+
+  <!-- ================= TOP BAR ================= -->
+  <header class="relative z-10 w-full px-6 py-6 max-w-7xl mx-auto flex items-center justify-between pointer-events-none">
+    <a href="../index.html" class="flex items-center gap-3 pointer-events-auto group">
+      <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-600/20 group-hover:scale-105 transition-transform">
+        <i data-lucide="hexagon" class="w-5 h-5 stroke-[2.2]"></i>
+      </div>
+      <span class="font-display font-bold text-lg tracking-tight text-slate-900">
+        WILLX <span class="font-normal text-slate-500 text-sm">Technologies</span>
+      </span>
+    </a>
+    <a href="../index.html" class="pointer-events-auto text-xs font-mono text-slate-600 hover:text-emerald-600 bg-white/80 backdrop-blur border border-slate-200/80 px-4 py-2 rounded-lg shadow-sm transition flex items-center gap-2 font-medium">
+      <i data-lucide="arrow-left" class="w-4 h-4 text-emerald-600"></i> Back to Home
+    </a>
+  </header>
+
+  <!-- ================= MAIN LOGIN CONTAINER ================= -->
+  <main class="relative z-10 flex-1 flex items-center justify-center px-4 py-8 pointer-events-none">
+    <div class="pointer-events-auto w-full max-w-md bg-white/92 backdrop-blur-xl p-8 sm:p-10 rounded-2xl border border-slate-200/80 shadow-2xl shadow-emerald-950/5">
+      
+      <!-- Top Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/70 text-emerald-700 text-xs font-mono font-semibold mb-4">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        RESTRICTED ACCESS
+      </div>
+
+      <!-- Title & Description -->
+      <h1 class="font-display text-2xl font-bold text-slate-900 mb-2">Projects Manager Login</h1>
+      <p class="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6">
+        Authorized Willx engineering &amp; project management accounts only.
+      </p>
+
+      <!-- Error Box -->
+      <div id="login-error" class="hidden mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs font-medium"></div>
+
+      <!-- Form -->
+      <form id="login-form" novalidate class="space-y-4">
+        <div>
+          <label for="username" class="block text-xs font-mono font-medium text-slate-700 uppercase mb-2">Username</label>
+          <div class="relative">
+            <input id="username" name="username" type="text" required autocomplete="username" placeholder="demo.manager" class="w-full bg-slate-50/80 border border-slate-300 rounded-lg pl-10 pr-4 py-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition" />
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs font-mono font-medium text-slate-700 uppercase mb-2">Password</label>
+          <div class="relative">
+            <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-slate-50/80 border border-slate-300 rounded-lg pl-10 pr-4 py-3 text-sm text-slate-900 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition" />
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+          </div>
+        </div>
+
+        <p class="text-[0.72rem] text-slate-400 font-mono leading-relaxed pt-1">
+          Forgot credentials? Contact your Willx IT administrator directly.
+        </p>
+
+        <button id="login-submit" type="submit" class="w-full mt-2 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-3.5 px-4 rounded-lg shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/35 hover:-translate-y-0.5 transition-all">
+          <span>Sign In</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
+
+      <!-- Footer Info Note -->
+      <div class="mt-8 pt-5 border-t border-slate-100 flex items-start gap-2 text-[0.72rem] text-slate-400 font-mono">
+        <i data-lucide="server" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
+        <span>Authenticated against <strong class="text-slate-700 font-semibold">WILLXHST</strong>. Active demo fallback enabled.</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="relative z-10 py-6 text-center text-xs font-mono text-slate-400 pointer-events-none">
+    <span class="pointer-events-auto">© 1999–2026 Willx Technologies. Internal Network Systems.</span>
+  </footer>
+
+  <!-- ================= INTERACTIVE NETWORK CANVAS SCRIPT ================= -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+
+      // Check session
+      if (typeof willxCheckSession === 'function') {
+        willxCheckSession().then(user => { 
+          if (user) window.location.href = 'dashboard.html'; 
+        });
+      }
+
+      // Login form logic
+      const form = document.getElementById('login-form');
+      const errorBox = document.getElementById('login-error');
+      const submitBtn = document.getElementById('login-submit');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Authenticating…';
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+          if (typeof willxLogin === 'function') {
+            await willxLogin(username, password);
+            window.location.href = 'dashboard.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        } catch (err) {
+          errorBox.textContent = err.message || 'Sign-in failed. Please check credentials.';
+          errorBox.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span').textContent = 'Sign In';
+        }
+      });
+
+      // ================= FULLSCREEN NETWORK ANIMATION =================
+      const canvas = document.getElementById('login-network-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height, dpr;
+      let nodes = [];
+      let packets = [];
+      let mouse = { x: null, y: null, maxDist: 180 };
+
+      function resize() {
+        dpr = window.devicePixelRatio || 1;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+        initNodes();
+      }
+
+      function initNodes() {
+        nodes = [];
+        const count = Math.floor((width * height) / 11000);
+        for (let i = 0; i < count; i++) {
+          nodes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.75,
+            vy: (Math.random() - 0.5) * 0.75,
+            radius: Math.random() * 2.5 + 2.5,
+            isHub: Math.random() < 0.18,
+            pulse: Math.random() * Math.PI
+          });
+        }
+      }
+
+      function createPacket(from, to) {
+        packets.push({
+          from: from,
+          to: to,
+          progress: 0,
+          speed: 0.015 + Math.random() * 0.02
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // 1. Draw connections
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 150) {
+              const alpha = (1 - dist / 150) * 0.35;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(16, 185, 129, ${alpha})`;
+              ctx.lineWidth = 1.2;
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+
+              // Occasionally spawn data packet
+              if (Math.random() < 0.0006 && packets.length < 15) {
+                createPacket(nodes[i], nodes[j]);
+              }
+            }
+          }
+        }
+
+        // 2. Mouse interaction & Magnetic Lines
+        if (mouse.x !== null) {
+          // Draw subtle radar pulse around mouse
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 40, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(16, 185, 129, 0.2)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          for (let i = 0; i < nodes.length; i++) {
+            const dx = nodes[i].x - mouse.x;
+            const dy = nodes[i].y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < mouse.maxDist) {
+              const alpha = (1 - dist / mouse.maxDist) * 0.65;
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(5, 150, 105, ${alpha})`;
+              ctx.lineWidth = 1.6;
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+
+              // Gentle attraction toward mouse
+              nodes[i].x -= dx * 0.015;
+              nodes[i].y -= dy * 0.015;
+            }
+          }
+        }
+
+        // 3. Draw and update Data Packets
+        for (let k = packets.length - 1; k >= 0; k--) {
+          const p = packets[k];
+          p.progress += p.speed;
+
+          if (p.progress >= 1) {
+            packets.splice(k, 1);
+            continue;
+          }
+
+          const currentX = p.from.x + (p.to.x - p.from.x) * p.progress;
+          const currentY = p.from.y + (p.to.y - p.from.y) * p.progress;
+
+          ctx.beginPath();
+          ctx.arc(currentX, currentY, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#059669';
+          ctx.shadowColor = 'rgba(16, 185, 129, 0.8)';
+          ctx.shadowBlur = 8;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+        // 4. Draw and move Nodes
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          n.pulse += 0.03;
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+          ctx.fillStyle = n.isHub ? '#047857' : '#10b981';
+          ctx.fill();
+
+          // Hub pulsing halo
+          if (n.isHub) {
+            const haloRadius = n.radius + Math.sin(n.pulse) * 4 + 4;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, haloRadius, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+
+          // Movement
+          n.x += n.vx;
+          n.y += n.vy;
+
+          if (n.x < 0 || n.x > width) n.vx *= -1;
+          if (n.y < 0 || n.y > height) n.vy *= -1;
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize);
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+      });
+
+      resize();
+      draw();
+    });
+  </script>
+</body>
+</html>

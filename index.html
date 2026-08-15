@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Willx Technologies — Mission-Critical AV, Network & Wireless Infrastructure</title>
+  <meta name="description" content="Willx Technologies: Over 20 years engineering mission-critical AV-over-IP, airport distributed audio, stadium networks, and enterprise IT infrastructure from Vancouver to Montreal." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    .grid-pattern {
+      background-image: linear-gradient(to right, rgba(16, 185, 129, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .luxury-card {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slider-track {
+      display: flex;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="relative bg-white text-slate-900 font-sans antialiased selection:bg-emerald-500 selection:text-white overflow-x-hidden">
+
+  <!-- Fixed Interactive Background Network Canvas -->
+  <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
+  <canvas id="global-network-canvas" class="fixed inset-0 w-full h-full pointer-events-auto z-0 opacity-85"></canvas>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#hero" class="flex items-center gap-3.5 group">
+        <div class="bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+          <img src="logo.png" alt="WILLX" class="h-6 w-auto object-contain" />
+        </div>
+        <span class="text-xs font-mono text-slate-500 uppercase tracking-widest font-semibold border-l border-slate-300 pl-3.5 hidden sm:inline">Technologies</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600 font-mono">
+        <a href="#about" class="hover:text-emerald-600 transition-colors">About</a>
+        <a href="#capabilities" class="hover:text-emerald-600 transition-colors">Capabilities</a>
+        <a href="#projects" class="hover:text-emerald-600 transition-colors">Projects</a>
+        <a href="#contact" class="hover:text-emerald-600 transition-colors">Contact</a>
+      </nav>
+
+      <!-- Action Group -->
+      <div class="hidden md:flex items-center gap-4">
+        <a href="tel:+19056860838" class="text-xs font-mono font-bold text-slate-600 hover:text-emerald-600 transition flex items-center gap-1.5">
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-600"></i> (905) 686-0838
+        </a>
+        <a href="#contact" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono font-bold px-5 py-2.5 rounded-xl shadow-sm hover:shadow-emerald-500/25 transition-all">
+          Get in Touch <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Button -->
+      <button id="nav-btn" aria-label="Toggle Navigation" class="md:hidden p-2 text-slate-600 hover:text-slate-900">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 bg-white px-6 py-4 space-y-3 font-mono text-sm shadow-lg">
+      <a href="#about" class="block text-slate-600 hover:text-emerald-600">About</a>
+      <a href="#capabilities" class="block text-slate-600 hover:text-emerald-600">Capabilities</a>
+      <a href="#projects" class="block text-slate-600 hover:text-emerald-600">Projects</a>
+      <a href="#contact" class="block text-slate-600 hover:text-emerald-600">Contact</a>
+      <a href="dashboard.html" class="block text-emerald-700 font-bold">Field Service Hub</a>
+    </div>
+  </header>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section id="hero" class="relative z-10 pt-36 pb-20 lg:pt-44 lg:pb-32">
+    <div class="max-w-7xl mx-auto px-6 pointer-events-none">
+      <div class="max-w-3xl pointer-events-auto">
+        
+        <!-- Founding Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-emerald-200/80 text-emerald-700 text-xs font-mono font-bold mb-8 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          20+ Years in Operation · Servicing Vancouver to Montreal
+        </div>
+
+        <!-- Headline -->
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.12]">
+          Technology, <span class="text-emerald-600">Simplified.</span> <br>
+          Tailored engineering for complex environments.
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-2xl font-normal">
+          From international airport terminal distributed audio to parliamentary relocations and stadium network architectures, Willx Technologies solves your technology challenges with attention to detail and custom-engineered solutions.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="mt-10 flex flex-wrap items-center gap-4">
+          <a href="#projects" class="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm font-mono px-7 py-4 rounded-xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:-translate-y-0.5 transition-all">
+            Explore Deployments <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#about" class="inline-flex items-center gap-2.5 bg-white/95 hover:bg-white border border-slate-200 text-slate-700 font-bold text-sm font-mono px-7 py-4 rounded-xl hover:-translate-y-0.5 shadow-sm transition-all">
+            <i data-lucide="info" class="w-4 h-4 text-emerald-600"></i> Our Story
+          </a>
+        </div>
+
+        <!-- Real Stats -->
+        <div class="mt-16 pt-10 border-t border-slate-200/80 grid grid-cols-3 gap-6 max-w-lg font-mono">
+          <div>
+            <div class="text-3xl font-bold text-slate-900"><span data-counter="20">0</span><span class="text-emerald-600">+</span></div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">Years Operation</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-slate-900"><span data-counter="1500">0</span><span class="text-emerald-600">+</span></div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">AV-IP Ports Deployed</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-slate-900"><span data-counter="100">0</span><span class="text-emerald-600">%</span></div>
+            <div class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">Uptime Record</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT & FOUNDING PRINCIPLE ================= -->
+  <section id="about" class="relative z-10 py-24 bg-slate-50/80 backdrop-blur-sm border-y border-slate-200/80">
+    <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center">
+      
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span> An Introduction to WillX Technologies
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold text-slate-900 tracking-tight leading-snug">
+          We understand that your network's strength goes beyond hardware.
+        </h2>
+        <p class="text-slate-600 leading-relaxed text-base sm:text-lg">
+          Operating for over two decades across Canada, we work with businesses of all sizes—from local enterprises to international airports and government assemblies. We are a dedicated team with an extensive network, collaborating with individuals at all corporate levels, from technicians to CEOs.
+        </p>
+        <p class="text-slate-600 leading-relaxed text-base">
+          Because one-size-fits-all does not apply in IT, we tailor every deployment specifically to your operational demands. Ultimately, technology should benefit your business, and that is our primary focus.
+        </p>
+      </div>
+
+      <div class="lg:col-span-5 space-y-6">
+        <!-- Principle Card -->
+        <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/50 space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+            <i data-lucide="compass" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-slate-900">Our Founding Principle</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            "Provide the knowledge to solve your technology challenges in simple and easy to understand terms so you can focus on what makes your business successful."
+          </p>
+        </div>
+
+        <!-- Automotive & Industry Card -->
+        <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/50 space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
+            <i data-lucide="car" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-display font-bold text-xl text-slate-900">Automotive &amp; Retail Solutions</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Involved in the automotive industry since inception, partnering with General Motors (GM) and major Canadian Dealer Service Providers to resolve retail service delivery challenges.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CAPABILITIES & TECHNOLOGY STACK ================= -->
+  <section id="capabilities" class="relative z-10 py-32">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <div class="max-w-3xl mb-20">
+        <div class="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 mb-3 bg-white/90 px-3.5 py-1.5 rounded-full border border-emerald-200/80 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Core Disciplines
+        </div>
+        <h2 class="text-4xl sm:text-5xl font-display font-bold text-slate-900 tracking-tight leading-[1.12] mt-2">
+          Specialized audio, video, lighting &amp; enterprise network systems.
+        </h2>
+      </div>
+
+      <div class="grid lg:grid-cols-3 gap-8">
+        
+        <!-- Cap 1 -->
+        <div class="luxury-card group bg-white/95 backdrop-blur-md p-10 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-600/15 hover:border-emerald-300 hover:-translate-y-2.5 flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <i data-lucide="waves" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-2xl font-bold font-display text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors">
+              Networked Audio, Video &amp; Lighting
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
+              Real-time, near-zero latency distributed audio and zoning control engineered with QSC Q-SYS, Dante, and Shure professional systems.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-slate-100 flex items-center gap-2 text-xs font-mono text-emerald-700 font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> QSC Q-SYS · Dante · Shure
+          </div>
+        </div>
+
+        <!-- Cap 2 -->
+        <div class="luxury-card group bg-white/95 backdrop-blur-md p-10 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-600/15 hover:border-emerald-300 hover:-translate-y-2.5 flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <i data-lucide="network" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-2xl font-bold font-display text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors">
+              Airport &amp; Stadium Network Design
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
+              High-availability routing, emergency messaging integration, and fiber backbones engineered with Cisco, Dell, and Microsoft enterprise architectures.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-slate-100 flex items-center gap-2 text-xs font-mono text-emerald-700 font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Cisco · Dell · Microsoft
+          </div>
+        </div>
+
+        <!-- Cap 3 -->
+        <div class="luxury-card group bg-white/95 backdrop-blur-md p-10 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-600/15 hover:border-emerald-300 hover:-translate-y-2.5 flex flex-col justify-between">
+          <div>
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+              <i data-lucide="wrench" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-2xl font-bold font-display text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors">
+              Consulting, Testing &amp; Diagnostics
+            </h3>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
+              Working hand-in-hand with integrators of record and facility network teams providing diagnostic procedures, rollout planning, and lifecycle maintenance.
+            </p>
+          </div>
+          <div class="pt-6 border-t border-slate-100 flex items-center gap-2 text-xs font-mono text-emerald-700 font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Diagnostics &amp; Lifecycle
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= REAL PROJECT CASE STUDIES WITH SLIDER ================= -->
+  <section id="projects" class="relative z-10 py-32 bg-slate-50/20 border-t border-slate-200/60">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-700 mb-3 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Documented Portfolio
+          </div>
+          <h2 class="text-4xl sm:text-5xl font-display font-bold text-slate-900 tracking-tight mt-2">
+            Selected deployments &amp; project milestones.
+          </h2>
+        </div>
+        
+        <!-- Category Filter Buttons -->
+        <div class="flex flex-wrap gap-2" id="project-filters">
+          <button class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-emerald-600 text-white shadow-sm transition" data-filter="all">All</button>
+          <button class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-300 transition" data-filter="Culture">Culture &amp; Theatres</button>
+          <button class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-300 transition" data-filter="Government">Government</button>
+          <button class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-300 transition" data-filter="Airport">Airports</button>
+          <button class="filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-300 transition" data-filter="Stadium">Stadiums</button>
+        </div>
+      </div>
+
+      <!-- Real Projects Grid -->
+      <div id="real-projects-grid" class="grid lg:grid-cols-2 gap-10">
+        <!-- Injected via JavaScript with Slider -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FULLSCREEN LIGHTBOX ================= -->
+  <div id="image-lightbox" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl hidden flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-200">
+    <button id="close-lightbox-btn" class="absolute top-6 right-6 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="relative max-w-5xl w-full flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="Enlarged Project View" class="max-h-[82vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl shadow-emerald-950/50" />
+      <p id="lightbox-caption" class="text-white/80 font-mono text-xs sm:text-sm mt-4 text-center"></p>
+    </div>
+  </div>
+
+  <!-- ================= CONTACT & SUPPORT PORTAL ================= -->
+  <section id="contact" class="relative z-10 py-32">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <div class="grid lg:grid-cols-12 gap-12">
+        
+        <!-- Contact Form -->
+        <div class="lg:col-span-7 bg-white p-8 sm:p-11 rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/40">
+          <div class="mb-8">
+            <h3 class="font-display font-bold text-2xl sm:text-3xl text-slate-900">Questions? Please Contact Us Below</h3>
+            <p class="text-slate-500 font-mono text-xs mt-1">Speak directly with our senior infrastructure engineering team.</p>
+          </div>
+
+          <form class="space-y-5" onsubmit="event.preventDefault(); alert('Thank you. We have received your inquiry.');">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">First Name *</label>
+                <input type="text" required placeholder="First Name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+              </div>
+              <div>
+                <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">Last Name *</label>
+                <input type="text" required placeholder="Last Name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">Email Address *</label>
+              <input type="email" required placeholder="name@company.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">Subject *</label>
+              <input type="text" required placeholder="Project Scoping / Network Consultation" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">Message *</label>
+              <textarea rows="4" required placeholder="Tell us about your venue requirements, bandwidth, or timelines..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-sm py-4 rounded-xl shadow-lg shadow-emerald-600/25 transition">
+              Submit Message
+            </button>
+          </form>
+        </div>
+
+        <!-- Business Info & Portals -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <!-- Office Card -->
+          <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 space-y-4 font-mono text-sm">
+            <h4 class="font-display font-bold text-xl text-slate-900">Our Business</h4>
+            <div class="space-y-2.5 text-slate-600 text-xs">
+              <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span>1 Banff Rd, Uxbridge, ON L9P 1S9</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="mail" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <a href="mailto:Sales@Willx.com" class="hover:text-emerald-700 font-bold text-slate-800">Sales@Willx.com</a>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="phone" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span>+1.905.686.0838</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="phone-call" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span>TOLL FREE: +1.888.249.4559</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Atera Support Portal Access Box -->
+          <div class="bg-slate-900 text-white p-8 rounded-3xl border border-slate-800 shadow-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold uppercase text-emerald-400">Client Support</span>
+              <i data-lucide="life-buoy" class="w-5 h-5 text-emerald-400"></i>
+            </div>
+            <h4 class="font-display font-bold text-xl">Support Portal Access</h4>
+            <p class="text-slate-400 text-xs leading-relaxed font-mono">
+              Direct access for active managed service clients, ticketing, and remote monitoring infrastructure.
+            </p>
+            <a href="https://atera.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-xs px-5 py-3 rounded-xl transition">
+              Launch Atera Support <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+
+          <!-- Field Service Control Hub Link -->
+          <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-3xl flex items-center justify-between">
+            <div>
+              <div class="font-display font-bold text-sm text-emerald-950">Field Operations Hub</div>
+              <div class="text-xs font-mono text-emerald-800">Internal technician handover &amp; directives</div>
+            </div>
+            <a href="dashboard.html" class="bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-xs px-4 py-2 rounded-xl transition">
+              Open Hub
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="relative z-10 bg-slate-900 text-slate-400 py-16 text-sm">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs border-t border-slate-800 pt-8">
+      <span>© 1999–2026 Willx Technologies. All rights reserved.</span>
+      <div class="flex items-center gap-6">
+        <a href="#about" class="hover:text-emerald-400 transition">About</a>
+        <a href="#projects" class="hover:text-emerald-400 transition">Projects</a>
+        <a href="dashboard.html" class="hover:text-emerald-400 transition">Field Hub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= SCRIPTS & REAL DATA ================= -->
+  <script>
+    const REAL_PROJECTS = [
+      {
+        id: 'nac-ottawa',
+        title: 'National Arts Centre (2017 – Present)',
+        category: 'Culture',
+        badge: '1,500+ Ports Active',
+        partners: 'Solotech & Engineering Harmonics',
+        summary: 'Deployment and upgrade of Audio Video Network systems spanning four main Stage Production Spaces with over 1,500 ports of network connectivity for all types of AV systems and wireless.',
+        specs: [
+          { label: 'Network Ports', value: '1,500+ AV Ports' },
+          { label: 'Production Stages', value: '4 Main Stages' }
+        ],
+        tags: ['Audio Video Networks', 'Wireless', '1500+ Ports'],
+        images: [
+          'https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'calgary-airport',
+        title: 'Calgary International Terminal Facilities',
+        category: 'Airport',
+        badge: 'Airport-Wide Rollout',
+        partners: 'YYC Network Teams & Integrator of Record',
+        summary: 'Testing, diagnostics, and planning for one of North America’s most advanced networked distributed audio systems for emergency messaging and passenger announcements with near-zero latency.',
+        specs: [
+          { label: 'Audio Latency', value: 'Near Zero Latency' },
+          { label: 'Scope', value: 'Terminal-Wide Zoning' }
+        ],
+        tags: ['Distributed Audio', 'Emergency Messaging', 'YYC Airport'],
+        images: [
+          'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'parliament-canada',
+        title: 'House of Commons & Senate of Canada (2018 – Present)',
+        category: 'Government',
+        badge: 'Federal Government',
+        partners: 'Engineering Harmonics',
+        summary: 'Key role in the historic technology relocation of Canada’s Federal Government House of Commons to West Block and the Senate to the newly renovated Senate Communications Building.',
+        specs: [
+          { label: 'Relocation Scope', value: 'West Block & Senate' },
+          { label: 'Status', value: 'Active Long-Term' }
+        ],
+        tags: ['Federal Government', 'Parliamentary AV', 'West Block'],
+        images: [
+          'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'tim-hortons-field',
+        title: 'Tim Hortons Field Stadium (Hamilton, Ontario)',
+        category: 'Stadium',
+        badge: 'Stadium Network Design',
+        partners: 'QSC Q-SYS & Cisco Systems',
+        summary: 'Designed and programmed Cisco enterprise network backbones and QSC Q-SYS distributed audio systems for stadium-wide emergency messaging, public address, and game-day announcements.',
+        specs: [
+          { label: 'Network Core', value: 'Cisco Enterprise' },
+          { label: 'Audio Engine', value: 'QSC Q-SYS' }
+        ],
+        tags: ['Stadium Network', 'Cisco', 'QSC Q-SYS'],
+        images: [
+          'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'sfm-montreal',
+        title: 'SFM Montreal (2015 – Present)',
+        category: 'Culture',
+        badge: 'National Partner',
+        partners: 'SFM Quebec',
+        summary: 'External network services, integrated planning, design, consultation, and education provider supporting global professional audio and visual brands across Canada.',
+        specs: [
+          { label: 'Relationship', value: '10+ Years Partnership' },
+          { label: 'Reach', value: 'National Across Canada' }
+        ],
+        tags: ['Network Planning', 'Global Brands', 'SFM Pro'],
+        images: [
+          'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'dg-smith',
+        title: 'DG Smith Insurance (August 2020)',
+        category: 'Government',
+        badge: 'Complete Build-Out',
+        partners: 'General Contractors',
+        summary: 'Complete IT infrastructure design, build-out, and active ongoing support, implementing the latest network security and workspace technologies for enhanced client operations.',
+        specs: [
+          { label: 'Deliverable', value: 'Full IT Infrastructure' },
+          { label: 'Support', value: 'Active Ongoing MSP' }
+        ],
+        tags: ['IT Infrastructure', 'Managed IT', 'Network Build'],
+        images: [
+          'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=80'
+        ]
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Mobile Menu
+      const navBtn = document.getElementById('nav-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (navBtn && mobileMenu) {
+        navBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+      }
+
+      // 2. Counters
+      document.querySelectorAll('[data-counter]').forEach(el => {
+        const target = parseFloat(el.dataset.counter);
+        const duration = 1200;
+        const start = performance.now();
+        const tick = (now) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.floor(target * eased);
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+
+      // 3. Render Real Projects with Image Slider
+      function renderProjects(filter = 'all') {
+        const grid = document.getElementById('real-projects-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        const filtered = REAL_PROJECTS.filter(p => filter === 'all' || p.category === filter);
+
+        filtered.forEach(p => {
+          const card = document.createElement('article');
+          card.className = 'bg-white rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-emerald-500/10 hover:border-emerald-300 transition-all duration-300 overflow-hidden flex flex-col justify-between';
+
+          const slidesHtml = p.images.map((imgUrl) => `
+            <div class="w-full h-full shrink-0 cursor-pointer slider-slide relative group">
+              <img src="${imgUrl}" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition"></div>
+            </div>
+          `).join('');
+
+          const dotsHtml = p.images.map((_, idx) => `
+            <button class="w-2 h-2 rounded-full transition-all ${idx === 0 ? 'bg-emerald-400 w-5' : 'bg-white/60 hover:bg-white'}" data-slide-idx="${idx}"></button>
+          `).join('');
+
+          const specsHtml = p.specs.map(s => `
+            <div>
+              <span class="text-slate-400 block mb-0.5">${s.label}</span>
+              <span class="font-bold text-slate-900 text-sm">${s.value}</span>
+            </div>
+          `).join('');
+
+          const tagsHtml = p.tags.map(t => `
+            <span class="px-3 py-1 bg-slate-100 rounded-md font-semibold text-slate-700">${t}</span>
+          `).join('');
+
+          card.innerHTML = `
+            <!-- Image Slider Box -->
+            <div class="p-4 bg-slate-100/60 border-b border-slate-100">
+              <div class="relative aspect-[16/10] rounded-2xl overflow-hidden group slider-container bg-slate-900">
+                
+                <!-- Track -->
+                <div class="slider-track w-full h-full flex" style="width: ${p.images.length * 100}%;">
+                  ${slidesHtml}
+                </div>
+
+                <!-- Navigation Arrows -->
+                ${p.images.length > 1 ? `
+                  <button class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-950/60 hover:bg-slate-950 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all prev-slide-btn z-20">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                  </button>
+                  <button class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-950/60 hover:bg-slate-950 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all next-slide-btn z-20">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                  </button>
+                ` : ''}
+
+                <!-- Counter Badge -->
+                <div class="absolute top-4 left-4 z-20 pointer-events-none">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur text-white text-xs font-mono">
+                    <i data-lucide="camera" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="slider-counter">1 / ${p.images.length}</span>
+                  </span>
+                </div>
+
+                <!-- Pagination Dots -->
+                ${p.images.length > 1 ? `
+                  <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 p-1.5 rounded-full bg-slate-950/40 backdrop-blur-sm slider-dots">
+                    ${dotsHtml}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-9 flex-1 flex flex-col justify-between space-y-6">
+              <div>
+                <div class="flex items-center justify-between mb-3 text-xs font-mono">
+                  <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold uppercase">${p.category}</span>
+                  <span class="text-slate-400 font-semibold">${p.badge}</span>
+                </div>
+                <h3 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 mb-2 leading-tight">${p.title}</h3>
+                <div class="text-xs font-mono text-emerald-700 font-semibold mb-4">Partner: ${p.partners}</div>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">${p.summary}</p>
+                <div class="grid grid-cols-2 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs font-mono mb-6">${specsHtml}</div>
+              </div>
+              <div class="pt-5 border-t border-slate-100 flex flex-wrap gap-2 text-xs font-mono">${tagsHtml}</div>
+            </div>
+          `;
+
+          // Slider Logic per Card
+          const track = card.querySelector('.slider-track');
+          const slides = card.querySelectorAll('.slider-slide');
+          const prevBtn = card.querySelector('.prev-slide-btn');
+          const nextBtn = card.querySelector('.next-slide-btn');
+          const dots = card.querySelectorAll('.slider-dots button');
+          const counter = card.querySelector('.slider-counter');
+          let currentIndex = 0;
+          const totalSlides = slides.length;
+
+          function updateSlider() {
+            track.style.transform = `translateX(-${currentIndex * (100 / totalSlides)}%)`;
+            if (counter) counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+            if (dots.length > 0) {
+              dots.forEach((d, idx) => {
+                if (idx === currentIndex) {
+                  d.className = 'w-5 h-2 rounded-full bg-emerald-400 transition-all';
+                } else {
+                  d.className = 'w-2 h-2 rounded-full bg-white/60 hover:bg-white transition-all';
+                }
+              });
+            }
+          }
+
+          if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              currentIndex = (currentIndex + 1) % totalSlides;
+              updateSlider();
+            });
+          }
+
+          if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+              updateSlider();
+            });
+          }
+
+          dots.forEach((dot, dIdx) => {
+            dot.addEventListener('click', (e) => {
+              e.stopPropagation();
+              currentIndex = dIdx;
+              updateSlider();
+            });
+          });
+
+          // Lightbox trigger on slide click
+          slides.forEach((slide) => {
+            slide.addEventListener('click', () => {
+              const activeImgUrl = p.images[currentIndex];
+              document.getElementById('lightbox-img').src = activeImgUrl;
+              document.getElementById('lightbox-caption').textContent = p.title + ` (Photo ${currentIndex + 1} of ${totalSlides})`;
+              document.getElementById('image-lightbox').classList.remove('hidden');
+            });
+          });
+
+          grid.appendChild(card);
+        });
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      // Filter Buttons Click
+      document.querySelectorAll('#project-filters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#project-filters .filter-btn').forEach(b => {
+            b.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-white text-slate-700 border border-slate-200 hover:border-emerald-300 transition';
+          });
+          btn.className = 'filter-btn px-4 py-2 rounded-xl text-xs font-mono font-bold bg-emerald-600 text-white shadow-sm transition';
+          renderProjects(btn.dataset.filter);
+        });
+      });
+
+      renderProjects('all');
+
+      // Lightbox Close Handlers
+      const lightbox = document.getElementById('image-lightbox');
+      const closeBtn = document.getElementById('close-lightbox-btn');
+      if (closeBtn) closeBtn.addEventListener('click', () => lightbox.classList.add('hidden'));
+      if (lightbox) lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.add('hidden'); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox) lightbox.classList.add('hidden'); });
+
+      // Interactive Network Canvas Background
+      const canvas = document.getElementById('global-network-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let width, height, dpr;
+        let nodes = [];
+        let mouse = { x: null, y: null, maxDist: 175 };
+        const nodeColors = ['#10b981', '#059669', '#0d9488', '#047857', '#64748b'];
+
+        function resize() {
+          dpr = window.devicePixelRatio || 1;
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.scale(dpr, dpr);
+          initNodes();
+        }
+
+        function initNodes() {
+          nodes = [];
+          const count = Math.floor((width * height) / 13000);
+          for (let i = 0; i < count; i++) {
+            nodes.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 0.45,
+              vy: (Math.random() - 0.5) * 0.45,
+              radius: Math.random() * 2 + 2,
+              color: nodeColors[Math.floor(Math.random() * nodeColors.length)]
+            });
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, width, height);
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              const dx = nodes[i].x - nodes[j].x;
+              const dy = nodes[i].y - nodes[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 145) {
+                const alpha = (1 - dist / 145) * 0.32;
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(16, 185, 129, ${alpha})`;
+                ctx.lineWidth = 1.1;
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nodes[j].x, nodes[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          if (mouse.x !== null) {
+            for (let i = 0; i < nodes.length; i++) {
+              const dx = nodes[i].x - mouse.x;
+              const dy = nodes[i].y - mouse.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < mouse.maxDist) {
+                const alpha = (1 - dist / mouse.maxDist) * 0.55;
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(5, 150, 105, ${alpha})`;
+                ctx.lineWidth = 1.4;
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+                nodes[i].x -= dx * 0.006;
+                nodes[i].y -= dy * 0.006;
+              }
+            }
+          }
+
+          for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.fill();
+            n.x += n.vx;
+            n.y += n.vy;
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+          }
+
+          requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+        resize();
+        draw();
+      }
+
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

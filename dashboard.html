@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Field Engineering & Site Handover Hub — Willx Technologies</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    .grid-pattern {
+      background-image: linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Drag & Drop Visuals */
+    .dragging-item {
+      opacity: 0.35 !important;
+      transform: scale(0.98);
+    }
+    .drag-over-zone {
+      border: 2px dashed #10b981 !important;
+      background-color: #f0fdf4 !important;
+      transform: translateY(2px);
+    }
+    .radar-sweep {
+      background: conic-gradient(from 0deg at 50% 50%, rgba(16, 185, 129, 0) 0deg, rgba(16, 185, 129, 0.25) 300deg, rgba(16, 185, 129, 0.8) 360deg);
+      animation: sweep 3s linear infinite;
+    }
+    @keyframes sweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="relative bg-slate-100/90 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white md:overflow-hidden">
+
+  <!-- Background Grid & Canvas -->
+  <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
+  <canvas id="field-network-canvas" class="fixed inset-0 w-full h-full pointer-events-auto z-0 opacity-75"></canvas>
+
+  <!-- ================= TOP APP HEADER ================= -->
+  <header class="relative z-20 min-h-16 py-2.5 sm:py-3.5 bg-slate-900 border-b border-slate-800 px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2.5 shrink-0 shadow-lg">
+    
+    <!-- Logo & Hub Name -->
+    <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+      <a href="index.html" class="flex items-center group shrink-0">
+        <div class="bg-white px-2 py-1 rounded-xl border border-slate-700 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+          <img src="logo.png" alt="WILLX" class="h-5 sm:h-6 w-auto object-contain" />
+        </div>
+      </a>
+      <div class="min-w-0">
+        <div class="font-display font-bold text-sm sm:text-base leading-tight text-white tracking-wide flex items-center gap-1.5 truncate">
+          <span>Field Service Hub</span>
+          <span class="text-[0.6rem] font-mono px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40 hidden sm:inline-block">LIVE</span>
+        </div>
+        <div class="text-[0.65rem] sm:text-[0.72rem] text-slate-400 font-mono leading-tight truncate">
+          <span class="text-emerald-400 font-semibold">WILLX</span> • Directives &amp; Handover
+        </div>
+      </div>
+    </div>
+    
+    <!-- User Meta & Controls -->
+    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+      
+      <!-- Role Switcher -->
+      <div class="flex items-center gap-1 bg-slate-800 px-2 sm:px-2.5 py-1 rounded-lg border border-slate-700">
+        <span class="text-[0.62rem] font-mono text-slate-400 uppercase hidden sm:inline font-semibold">Role:</span>
+        <select id="role-switcher-preview" class="bg-transparent text-emerald-400 text-[0.68rem] sm:text-xs font-mono font-bold focus:outline-none cursor-pointer">
+          <option value="admin" class="bg-slate-900 text-white">Admin</option>
+          <option value="technician" class="bg-slate-900 text-white">Tech</option>
+        </select>
+      </div>
+
+      <div class="hidden md:flex flex-col text-right">
+        <span id="current-user-display" class="text-xs font-mono font-bold text-slate-200">Mahmoud Abuzaid</span>
+        <span id="current-user-role-label" class="text-[0.62rem] font-mono text-emerald-400">Lead Field Engineer</span>
+      </div>
+
+      <a href="index.html" class="inline-flex items-center gap-1 sm:gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-semibold py-1.5 px-2.5 sm:px-3.5 rounded-xl border border-slate-700 transition shadow-sm" title="Sign Out">
+        <i data-lucide="log-out" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span class="hidden sm:inline">Sign Out</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ================= MAIN LAYOUT ================= -->
+  <div class="relative z-10 flex-1 flex flex-col md:flex-row md:overflow-hidden">
+    
+    <!-- LEFT SIDEBAR: DRAGGABLE SITES LIST -->
+    <aside class="w-full md:w-80 lg:w-96 bg-white border-r border-b md:border-b-0 border-slate-200/90 flex flex-col shrink-0 shadow-md justify-between transition-all max-h-[46vh] md:max-h-none">
+      
+      <!-- Top Search & Add -->
+      <div class="p-3.5 sm:p-4 border-b border-slate-200 bg-slate-50 space-y-2.5 shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">Client Sites</span>
+            <span class="text-[0.62rem] text-slate-400 font-mono hidden sm:inline">(Drag to sort)</span>
+          </div>
+          <button id="open-add-site-modal" class="admin-only-control inline-flex items-center gap-1 text-[0.68rem] sm:text-xs font-mono font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg transition shadow-sm">
+            <i data-lucide="plus" class="w-3 h-3"></i> Add Site
+          </button>
+        </div>
+        <div class="relative">
+          <input id="site-search" type="text" placeholder="Search site or sector…" class="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition shadow-sm" />
+          <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5"></i>
+        </div>
+      </div>
+
+      <!-- Scrollable Sites -->
+      <div id="site-items" class="flex-1 overflow-y-auto divide-y divide-slate-100 custom-scroll bg-white p-2 space-y-1">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Bottom Telemetry Animation Widget -->
+      <div class="p-2.5 sm:p-3.5 border-t border-slate-200 bg-slate-900 text-slate-300 shrink-0 select-none hidden sm:block">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="relative w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-emerald-500/40 bg-slate-950 flex items-center justify-center overflow-hidden shrink-0">
+              <div class="absolute inset-0 radar-sweep opacity-75"></div>
+              <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 z-10 animate-ping"></div>
+            </div>
+            <div>
+              <div class="text-[0.68rem] sm:text-xs font-mono font-bold text-white flex items-center gap-1">
+                <span>Site Telemetry</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <div class="text-[0.6rem] font-mono text-slate-400">Gateway Active</div>
+            </div>
+          </div>
+          <span class="text-[0.62rem] font-mono font-semibold px-1.5 py-0.5 rounded bg-slate-800 text-emerald-400 border border-slate-700">0 ms latency</span>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT: SITE HANDOVER & DIRECTIVES -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto custom-scroll">
+      
+      <!-- Empty State -->
+      <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center py-16 hidden">
+        <div class="w-16 h-16 rounded-2xl bg-white border border-slate-200 flex items-center justify-center mb-4 text-emerald-600 shadow-lg">
+          <i data-lucide="map-pin" class="w-8 h-8"></i>
+        </div>
+        <p class="text-slate-900 font-display font-bold text-xl sm:text-2xl">اختر الموقع / السايت لعرض التعليمات</p>
+        <p class="text-slate-500 text-xs font-mono mt-1">Select a site above to view directives</p>
+      </div>
+
+      <!-- Active Site Dashboard -->
+      <div id="site-detail" class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- SITE HEADER CARD -->
+        <div id="current-site-header-card" class="bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors">
+          <div class="space-y-1.5 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 id="current-site-name" class="font-display text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-tight"></h2>
+              <span id="current-site-type" class="px-2.5 py-0.5 rounded-full text-[0.65rem] sm:text-xs font-mono font-bold shadow-sm"></span>
+            </div>
+            <div class="text-xs text-slate-600 font-mono flex flex-wrap items-center gap-2 sm:gap-3 pt-1">
+              <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i> <span id="current-site-location"></span></span>
+              <span>•</span>
+              <span class="flex items-center gap-1"><i data-lucide="key" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i> <span id="current-site-access" class="break-all"></span></span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2 self-start sm:self-auto shrink-0 pt-2 sm:pt-0">
+            <button id="delete-current-site-btn" class="admin-only-control p-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl transition" title="Delete Site">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <button id="open-handover-modal" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono font-bold px-4 py-2.5 rounded-xl shadow-md transition-all">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Add Directive
+            </button>
+          </div>
+        </div>
+
+        <!-- TABS & DIRECTIVE SEARCH BAR -->
+        <div class="space-y-3 sm:space-y-4">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <!-- View Tabs -->
+            <div class="flex items-center gap-1.5 bg-slate-200/80 p-1 rounded-xl w-fit" id="view-tabs">
+              <button class="tab-btn active-tab px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 bg-white text-slate-900 shadow-sm" data-tab="pending">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span>Active</span>
+                <span id="tab-pending-count" class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[0.65rem]">0</span>
+              </button>
+              <button class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900" data-tab="resolved">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Resolved</span>
+                <span id="tab-resolved-count" class="px-1.5 py-0.2 rounded bg-slate-300 text-slate-700 text-[0.65rem]">0</span>
+              </button>
+            </div>
+
+            <!-- Directive Search -->
+            <div class="relative w-full sm:w-64">
+              <input id="directive-search" type="text" placeholder="Search directives…" class="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-3 py-1.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition shadow-sm" />
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2"></i>
+            </div>
+          </div>
+
+          <!-- Cards List -->
+          <div id="handover-cards-list" class="space-y-4">
+            <!-- Injected via JavaScript -->
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= ADD NEW SITE MODAL ================= -->
+  <div id="new-site-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 w-full max-w-lg p-6 sm:p-8 shadow-2xl">
+      
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+            <i data-lucide="building" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-slate-900">Add New Site</h3>
+            <p class="text-[0.68rem] font-mono text-slate-500">Register new field location</p>
+          </div>
+        </div>
+        <button id="close-site-modal-btn" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="new-site-form" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Site / Customer Name *</label>
+          <input id="ns-name" type="text" required placeholder="e.g. Apex Technology Complex" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Venue / Sector</label>
+            <select id="ns-type" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition">
+              <option>Corporate / Distribution</option>
+              <option>Stadium / Arena</option>
+              <option>Culture / Theatre</option>
+              <option>Casino / Resort</option>
+              <option>Government / Event</option>
+              <option>Broadcast / Studio</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Sub-Location</label>
+            <input id="ns-location" type="text" placeholder="e.g. Building B · North Wing" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Door / Access Info</label>
+          <input id="ns-access" type="text" placeholder="e.g. Badge Code #8842 · Keybox 04" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="cancel-site-modal-btn" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-mono font-bold">Cancel</button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold px-5 py-2 rounded-xl transition shadow">Save Site</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= DROP HANDOVER / DIRECTIVE MODAL ================= -->
+  <div id="handover-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 w-full max-w-lg p-6 sm:p-8 shadow-2xl">
+      
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+            <i data-lucide="clipboard-pen" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-slate-900">Log Site Directive</h3>
+            <p class="text-[0.68rem] font-mono text-slate-500">For site: <span id="modal-site-name" class="font-bold text-slate-800"></span></p>
+          </div>
+        </div>
+        <button id="close-modal-btn" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form id="handover-form" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Directive / Task Title *</label>
+          <input id="ho-title" type="text" required placeholder="e.g. Swap Cisco 9300 Switch in Rack B3" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Action Category</label>
+            <select id="ho-category" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition">
+              <option value="Hardware Swap">Hardware Swap</option>
+              <option value="Cabling & Patching">Cabling &amp; Patching</option>
+              <option value="Config & Firmware">Config &amp; Firmware</option>
+              <option value="Rack & Power">Rack &amp; Power</option>
+              <option value="Site Notice">General Notice</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Priority</label>
+            <select id="ho-priority" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition">
+              <option value="Urgent on Arrival">🔴 Critical / Urgent</option>
+              <option value="Scheduled Action" selected>🟡 Scheduled Swap/Fix</option>
+              <option value="Notice Only">🟢 Informational Notice</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Exact Location / Rack Unit *</label>
+          <input id="ho-location" type="text" required placeholder="e.g. Server Room B · Rack 2A · Unit U24" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition" />
+        </div>
+
+        <div>
+          <label class="block font-mono font-bold text-slate-700 uppercase mb-1">Detailed Instructions *</label>
+          <textarea id="ho-instruction" rows="3" required placeholder="Write technical steps clearly..." class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm focus:bg-white focus:outline-none focus:border-emerald-500 transition resize-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="cancel-modal-btn" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-mono font-bold">Cancel</button>
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold px-5 py-2 rounded-xl transition shadow">Save Directive</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= SCRIPT LOGIC ================= -->
+  <script>
+    const DB_SERVICE = {
+      currentUser: {
+        id: 'usr_001',
+        name: 'Mahmoud Abuzaid',
+        role: 'admin'
+      },
+
+      data: [
+        {
+          id: 'site_apex',
+          name: 'Apex Technology Complex',
+          type: 'Corporate / Distribution',
+          location: 'Building B · North Wing',
+          accessInfo: 'Badge code: #8842 · Key in Lockbox 04 (Don\'t drop it behind the vending machine)',
+          directives: [
+            {
+              id: 'd_1',
+              title: 'Swap Core Switch 02 before it launches into orbit',
+              category: 'Hardware Swap',
+              priority: 'Urgent on Arrival',
+              rackUnit: 'Rack Room B2 · Rack 01 (U18-U19)',
+              author: 'Mahmoud Abuzaid',
+              timestamp: 'Aug 14, 2026 · 05:30 PM',
+              resolvedTimestamp: null,
+              resolvedBy: null,
+              instruction: 'The secondary Cisco 9300 switch fan is spinning at 14,000 RPM and sounds like a Boeing 747 taking off. Bring the spare from Uxbridge warehouse, swap it out, and re-patch Port 24 before the accounting team complains about the noise.',
+              status: 'Pending Next Visit'
+            },
+            {
+              id: 'd_2',
+              title: 'Label the mystery green cable that nobody dares to unplug',
+              category: 'Cabling & Patching',
+              priority: 'Scheduled Action',
+              rackUnit: 'Server Room B · Patch Panel 03 (Port 11)',
+              author: 'S. Farah',
+              timestamp: 'Aug 12, 2026 · 02:15 PM',
+              resolvedTimestamp: null,
+              resolvedBy: null,
+              instruction: 'There is a loose green Cat6 cable plugged into Port 11 with a post-it note saying "DO NOT TOUCH - MAGIC". Trace it with the toner, verify it just goes to the breakroom smart fridge, and put a permanent P-Touch label on it.',
+              status: 'Pending Next Visit'
+            }
+          ]
+        },
+        {
+          id: 'site_scotia',
+          name: 'Scotiabank Arena',
+          type: 'Stadium / Arena',
+          location: 'Gate 4 · Main Broadcast Floor',
+          accessInfo: 'Security Pass at Gate 1 · Don\'t look directly into the arena laser test',
+          directives: [
+            {
+              id: 'd_3',
+              title: 'Replace SFP+ 10G Transceiver on Catwalk AP-14',
+              category: 'Hardware Swap',
+              priority: 'Urgent on Arrival',
+              rackUnit: 'Catwalk Sector 114 · J-Box 4',
+              author: 'Mahmoud Abuzaid',
+              timestamp: 'Aug 13, 2026 · 11:40 AM',
+              resolvedTimestamp: 'Aug 14, 2026 · 06:10 PM',
+              resolvedBy: 'Mahmoud Abuzaid',
+              instruction: 'AP-14 on the high catwalk dropped to 1Gbps failover because someone looked at the fiber wrong. Replaced optical transceiver with a 10G-SR module and verified 10G link before Saturday game night.',
+              status: 'Completed on Site'
+            },
+            {
+              id: 'd_4',
+              title: 'Secure the Dante primary trunk from stray hockey pucks',
+              category: 'Rack & Power',
+              priority: 'Scheduled Action',
+              rackUnit: 'Lower Bowl AV Rack 02 · Trunk Conduit A',
+              author: 'S. Farah',
+              timestamp: 'Aug 11, 2026 · 03:20 PM',
+              resolvedTimestamp: null,
+              resolvedBy: null,
+              instruction: 'A warm-up puck somehow bounced into the AV cable tray during morning skate. The armored conduit did its job, but please add two extra metal zip-ties and check optical signal loss on OTDR.',
+              status: 'Pending Next Visit'
+            }
+          ]
+        },
+        {
+          id: 'site_nac',
+          name: 'National Arts Centre',
+          type: 'Culture / Theatre',
+          location: 'Stage 1 & 2 Sub-Basement',
+          accessInfo: 'Backstage pass via Stage Door · Whisper if orchestra is rehearsing',
+          directives: [
+            {
+              id: 'd_5',
+              title: 'Label and Dress New Fiber Patch in Studio A Rack',
+              category: 'Cabling & Patching',
+              priority: 'Notice Only',
+              rackUnit: 'Audio Engineering Rack U04-U12',
+              author: 'S. Farah',
+              timestamp: 'Aug 10, 2026 · 04:00 PM',
+              resolvedTimestamp: 'Aug 11, 2026 · 01:20 PM',
+              resolvedBy: 'S. Farah',
+              instruction: 'New LC-LC fiber leads were routed from Stage 2 to studio last visit. Cleaned up the spaghetti cables and put permanent labels so sound engineers stop unplugging the wrong line.',
+              status: 'Completed on Site'
+            },
+            {
+              id: 'd_6',
+              title: 'Verify Dante Audio Clock Sync on Stage Matrix',
+              category: 'Config & Firmware',
+              priority: 'Scheduled Action',
+              rackUnit: 'AV Control Room · AV Rack 03',
+              author: 'Mahmoud Abuzaid',
+              timestamp: 'Aug 09, 2026 · 10:15 AM',
+              resolvedTimestamp: null,
+              resolvedBy: null,
+              instruction: 'Check Dante Controller master clock settings. Ensure the backup Shure wireless receiver is set to slave clock so we don\'t get random clicks in the middle of a cello solo.',
+              status: 'Pending Next Visit'
+            }
+          ]
+        },
+        {
+          id: 'site_northern',
+          name: 'Northern Lights Casino Resort',
+          type: 'Casino / Resort',
+          location: 'Back-of-House IT Suite 101',
+          accessInfo: 'Dual authorization badge required with Gaming Manager · No free slot spins',
+          directives: [
+            {
+              id: 'd_7',
+              title: 'Inspect UPS Battery Bank on Row 2 Rack',
+              category: 'Rack & Power',
+              priority: 'Scheduled Action',
+              rackUnit: 'MDF Room · APC Symmetra Frame',
+              author: 'Mahmoud Abuzaid',
+              timestamp: 'Aug 08, 2026 · 09:20 AM',
+              resolvedTimestamp: null,
+              resolvedBy: null,
+              instruction: 'Run self-test on APC UPS #2 and verify replacement battery cartridge arrived from supplier. If the UPS beeps, don\'t panic, it just wants attention.',
+              status: 'Pending Next Visit'
+            },
+            {
+              id: 'd_8',
+              title: 'Audit Floor Switch VLANs for Slot Machine Isolation',
+              category: 'Config & Firmware',
+              priority: 'Urgent on Arrival',
+              rackUnit: 'Pit 4 IDF Cabinet · Cisco 3850',
+              author: 'S. Farah',
+              timestamp: 'Aug 07, 2026 · 01:45 PM',
+              resolvedTimestamp: 'Aug 08, 2026 · 11:30 AM',
+              resolvedBy: 'Mahmoud Abuzaid',
+              instruction: 'Double-checked VLAN 40 configuration to ensure guest Wi-Fi cannot talk to the progressive jackpot servers. All ports secured with 802.1X.',
+              status: 'Completed on Site'
+            }
+          ]
+        }
+      ],
+
+      async getSites() { return this.data; },
+      async addSite(newSite) { this.data.unshift(newSite); return newSite; },
+      async deleteSite(siteId) { this.data = this.data.filter(s => s.id !== siteId); },
+      async addDirective(siteId, directive) {
+        const site = this.data.find(s => s.id === siteId);
+        if (site) site.directives.unshift(directive);
+      },
+      async toggleDirectiveStatus(siteId, directiveId, resolvedTimestamp) {
+        const site = this.data.find(s => s.id === siteId);
+        if (!site) return;
+        const dir = site.directives.find(d => d.id === directiveId);
+        if (!dir) return;
+
+        if (dir.status === 'Pending Next Visit') {
+          dir.status = 'Completed on Site';
+          dir.resolvedTimestamp = resolvedTimestamp;
+          dir.resolvedBy = this.currentUser.name;
+        } else {
+          dir.status = 'Pending Next Visit';
+          dir.resolvedTimestamp = null;
+          dir.resolvedBy = null;
+        }
+      }
+    };
+
+    const SECTOR_THEMES = {
+      'Corporate / Distribution': { border: 'border-emerald-500', bg: 'bg-emerald-50/80', badge: 'bg-emerald-100 text-emerald-800 border-emerald-200', accent: 'text-emerald-700' },
+      'Stadium / Arena': { border: 'border-sky-500', bg: 'bg-sky-50/80', badge: 'bg-sky-100 text-sky-800 border-sky-200', accent: 'text-sky-700' },
+      'Culture / Theatre': { border: 'border-purple-500', bg: 'bg-purple-50/80', badge: 'bg-purple-100 text-purple-800 border-purple-200', accent: 'text-purple-700' },
+      'Casino / Resort': { border: 'border-amber-500', bg: 'bg-amber-50/80', badge: 'bg-amber-100 text-amber-800 border-amber-200', accent: 'text-amber-700' },
+      'Government / Event': { border: 'border-blue-500', bg: 'bg-blue-50/80', badge: 'bg-blue-100 text-blue-800 border-blue-200', accent: 'text-blue-700' },
+      'Broadcast / Studio': { border: 'border-teal-500', bg: 'bg-teal-50/80', badge: 'bg-teal-100 text-teal-800 border-teal-200', accent: 'text-teal-700' }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      let activeSiteId = 'site_apex';
+      let currentTab = 'pending';
+      let draggedSiteIndex = null;
+      let draggedDirectiveIndex = null;
+
+      const PRIORITY_BADGES = {
+        'Urgent on Arrival': 'bg-red-50 text-red-700 border-red-200',
+        'Scheduled Action': 'bg-amber-50 text-amber-700 border-amber-200',
+        'Notice Only': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      };
+
+      const CATEGORY_ICONS = {
+        'Hardware Swap': 'cpu',
+        'Cabling & Patching': 'cable',
+        'Config & Firmware': 'terminal',
+        'Rack & Power': 'zap',
+        'Site Notice': 'info'
+      };
+
+      function getFormattedTimestamp() {
+        const now = new Date();
+        return now.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(',', ' ·');
+      }
+
+      function updateRoleUI() {
+        const isAdmin = DB_SERVICE.currentUser.role === 'admin';
+        document.querySelectorAll('.admin-only-control').forEach(el => {
+          if (isAdmin) el.classList.remove('hidden');
+          else el.classList.add('hidden');
+        });
+        const roleLabel = document.getElementById('current-user-role-label');
+        if (roleLabel) roleLabel.textContent = isAdmin ? 'Lead Engineer (Admin)' : 'Field Tech';
+      }
+
+      async function renderSiteList(filterText = '') {
+        const sites = await DB_SERVICE.getSites();
+        const wrap = document.getElementById('site-items');
+        wrap.innerHTML = '';
+        const filtered = sites.filter(s => s.name.toLowerCase().includes(filterText.toLowerCase()) || s.type.toLowerCase().includes(filterText.toLowerCase()));
+
+        filtered.forEach((s, index) => {
+          const pendingCount = s.directives.filter(d => d.status === 'Pending Next Visit').length;
+          const isSelected = s.id === activeSiteId;
+          const theme = SECTOR_THEMES[s.type] || SECTOR_THEMES['Corporate / Distribution'];
+
+          const el = document.createElement('div');
+          el.className = `w-full p-3 sm:p-4 rounded-xl transition-all flex items-center justify-between border-l-4 select-none cursor-pointer hover:scale-[1.01] hover:shadow-sm ${
+            isSelected ? `${theme.bg} ${theme.border} shadow-sm font-semibold` : 'border-transparent hover:bg-slate-50 text-slate-700'
+          }`;
+          el.setAttribute('draggable', 'true');
+          el.dataset.index = index;
+
+          el.innerHTML = `
+            <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+              <div class="drag-handle text-slate-300 hover:text-slate-600 cursor-grab p-1 -ml-1 shrink-0 hidden sm:block">
+                <i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-1.5">
+                  <span class="font-display font-bold text-sm sm:text-base text-slate-900 truncate">${s.name}</span>
+                  ${pendingCount ? `<span class="text-[0.62rem] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 shrink-0">${pendingCount} act</span>` : `<span class="text-[0.62rem] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 shrink-0">Clear</span>`}
+                </div>
+                <div class="text-[0.65rem] sm:text-xs font-mono text-slate-500 mt-0.5 flex items-center gap-1.5 truncate">
+                  <span class="font-semibold ${theme.accent}">${s.type}</span>
+                  <span>•</span>
+                  <span class="truncate">${s.location}</span>
+                </div>
+              </div>
+            </div>
+          `;
+
+          el.addEventListener('dragstart', (e) => { draggedSiteIndex = index; el.classList.add('dragging-item'); });
+          el.addEventListener('dragend', () => { el.classList.remove('dragging-item'); document.querySelectorAll('#site-items > div').forEach(d => d.classList.remove('drag-over-zone')); });
+          el.addEventListener('dragover', (e) => { e.preventDefault(); el.classList.add('drag-over-zone'); });
+          el.addEventListener('dragleave', () => el.classList.remove('drag-over-zone'));
+          el.addEventListener('drop', (e) => {
+            e.preventDefault();
+            el.classList.remove('drag-over-zone');
+            if (draggedSiteIndex !== null && draggedSiteIndex !== index) {
+              const movedSite = DB_SERVICE.data.splice(draggedSiteIndex, 1)[0];
+              DB_SERVICE.data.splice(index, 0, movedSite);
+              renderSiteList(document.getElementById('site-search').value);
+              renderSiteDetail();
+            }
+          });
+
+          el.addEventListener('click', (e) => {
+            if (e.target.closest('.drag-handle')) return;
+            activeSiteId = s.id;
+            renderSiteList(document.getElementById('site-search').value);
+            renderSiteDetail();
+          });
+
+          wrap.appendChild(el);
+        });
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      async function renderSiteDetail() {
+        const sites = await DB_SERVICE.getSites();
+        const site = sites.find(s => s.id === activeSiteId);
+        const empty = document.getElementById('empty-state');
+        const detail = document.getElementById('site-detail');
+
+        if (!site) {
+          empty.classList.remove('hidden');
+          detail.classList.add('hidden');
+          return;
+        }
+
+        empty.classList.add('hidden');
+        detail.classList.remove('hidden');
+
+        const theme = SECTOR_THEMES[site.type] || SECTOR_THEMES['Corporate / Distribution'];
+
+        document.getElementById('current-site-name').textContent = site.name;
+        const typeBadge = document.getElementById('current-site-type');
+        typeBadge.textContent = site.type;
+        typeBadge.className = `px-2.5 py-0.5 rounded-full text-[0.65rem] sm:text-xs font-mono font-bold shadow-sm border ${theme.badge}`;
+        document.getElementById('current-site-location').textContent = site.location;
+        document.getElementById('current-site-access').textContent = site.accessInfo;
+
+        const pendingList = site.directives.filter(d => d.status === 'Pending Next Visit');
+        const resolvedList = site.directives.filter(d => d.status === 'Completed on Site');
+
+        document.getElementById('tab-pending-count').textContent = pendingList.length;
+        document.getElementById('tab-resolved-count').textContent = resolvedList.length;
+
+        const searchQuery = document.getElementById('directive-search').value.toLowerCase();
+        let displayList = (currentTab === 'pending' ? pendingList : resolvedList).filter(d => 
+          d.title.toLowerCase().includes(searchQuery) ||
+          d.rackUnit.toLowerCase().includes(searchQuery) ||
+          d.instruction.toLowerCase().includes(searchQuery) ||
+          d.author.toLowerCase().includes(searchQuery)
+        );
+
+        const cardsContainer = document.getElementById('handover-cards-list');
+        cardsContainer.innerHTML = '';
+
+        if (displayList.length === 0) {
+          cardsContainer.innerHTML = `
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 text-center text-slate-500 font-mono text-xs sm:text-sm shadow-sm">
+              <i data-lucide="${currentTab === 'pending' ? 'check-circle' : 'search'}" class="w-6 h-6 mx-auto mb-2 text-slate-400"></i>
+              No directives found for this view.
+            </div>
+          `;
+          if (window.lucide) lucide.createIcons();
+          return;
+        }
+
+        displayList.forEach((directive, index) => {
+          const isPending = directive.status === 'Pending Next Visit';
+          const card = document.createElement('div');
+          card.className = `bg-white rounded-2xl sm:rounded-3xl border ${isPending ? 'border-slate-200/90 shadow-md' : 'border-slate-200 bg-slate-50/70 opacity-85'} p-5 sm:p-7 space-y-3.5 transition-all`;
+          card.setAttribute('draggable', 'true');
+          card.dataset.index = index;
+
+          const iconName = CATEGORY_ICONS[directive.category] || 'wrench';
+
+          card.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2 select-none">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[0.65rem] sm:text-xs font-mono font-bold border ${PRIORITY_BADGES[directive.priority] || 'bg-slate-100 text-slate-700'}">
+                  ${directive.priority}
+                </span>
+                <span class="inline-flex items-center gap-1 text-[0.65rem] sm:text-xs font-mono text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full font-semibold">
+                  <i data-lucide="${iconName}" class="w-3 h-3 text-emerald-600"></i> ${directive.category}
+                </span>
+              </div>
+
+              <button class="toggle-status-btn inline-flex items-center gap-1.5 text-[0.68rem] sm:text-xs font-mono font-bold px-3 py-1.5 rounded-xl border transition ${
+                isPending ? 'bg-white hover:bg-emerald-50 border-slate-300 text-slate-700' : 'bg-emerald-100 text-emerald-800 border-emerald-200'
+              }">
+                <i data-lucide="${isPending ? 'circle' : 'check-circle-2'}" class="w-3.5 h-3.5 ${isPending ? 'text-slate-400' : 'text-emerald-600'}"></i>
+                <span>${isPending ? 'Mark Done' : 'Reopen'}</span>
+              </button>
+            </div>
+
+            <div>
+              <h4 class="font-display font-bold text-lg sm:text-xl text-slate-900 mb-1.5 leading-snug">${directive.title}</h4>
+              <div class="text-xs font-mono text-emerald-700 font-semibold mb-2.5 flex items-center gap-1.5 bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-100/80">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 shrink-0 text-emerald-600"></i>
+                <span class="truncate">Location: <strong>${directive.rackUnit}</strong></span>
+              </div>
+              <div class="bg-slate-50 p-3.5 sm:p-4 rounded-xl border border-slate-200 text-slate-800 text-xs sm:text-sm leading-relaxed font-sans">
+                ${directive.instruction}
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between text-[0.68rem] sm:text-xs font-mono text-slate-400 pt-2.5 border-t border-slate-100 gap-1.5">
+              <span>By: <strong class="text-slate-700 font-semibold">${directive.author}</strong></span>
+              <span>${directive.timestamp} ${directive.resolvedTimestamp ? `• <strong class="text-emerald-700">Cleared</strong>` : ''}</span>
+            </div>
+          `;
+
+          card.addEventListener('dragstart', (e) => { draggedDirectiveIndex = index; card.classList.add('dragging-item'); });
+          card.addEventListener('dragend', () => { card.classList.remove('dragging-item'); document.querySelectorAll('#handover-cards-list > div').forEach(c => c.classList.remove('drag-over-zone')); });
+          card.addEventListener('dragover', (e) => { e.preventDefault(); card.classList.add('drag-over-zone'); });
+          card.addEventListener('dragleave', () => card.classList.remove('drag-over-zone'));
+          card.addEventListener('drop', (e) => {
+            e.preventDefault();
+            card.classList.remove('drag-over-zone');
+            if (draggedDirectiveIndex !== null && draggedDirectiveIndex !== index) {
+              const movedDirective = site.directives.splice(draggedDirectiveIndex, 1)[0];
+              site.directives.splice(index, 0, movedDirective);
+              renderSiteDetail();
+            }
+          });
+
+          card.querySelector('.toggle-status-btn').addEventListener('click', async () => {
+            await DB_SERVICE.toggleDirectiveStatus(site.id, directive.id, getFormattedTimestamp());
+            renderSiteList(document.getElementById('site-search').value);
+            renderSiteDetail();
+          });
+
+          cardsContainer.appendChild(card);
+        });
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      document.getElementById('role-switcher-preview').addEventListener('change', (e) => {
+        DB_SERVICE.currentUser.role = e.target.value;
+        updateRoleUI();
+      });
+
+      document.querySelectorAll('#view-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#view-tabs .tab-btn').forEach(b => {
+            b.className = 'tab-btn px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+          });
+          btn.className = 'tab-btn active-tab px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold transition flex items-center gap-1.5 bg-white text-slate-900 shadow-sm';
+          currentTab = btn.dataset.tab;
+          renderSiteDetail();
+        });
+      });
+
+      document.getElementById('directive-search').addEventListener('input', () => renderSiteDetail());
+      document.getElementById('site-search').addEventListener('input', (e) => renderSiteList(e.target.value));
+
+      document.getElementById('delete-current-site-btn').addEventListener('click', async () => {
+        const site = DB_SERVICE.data.find(s => s.id === activeSiteId);
+        if (!site) return;
+        if (confirm(`Delete "${site.name}"?`)) {
+          await DB_SERVICE.deleteSite(activeSiteId);
+          activeSiteId = DB_SERVICE.data.length ? DB_SERVICE.data[0].id : null;
+          renderSiteList();
+          renderSiteDetail();
+        }
+      });
+
+      const siteModal = document.getElementById('new-site-modal');
+      const openSiteModalBtn = document.getElementById('open-add-site-modal');
+      const closeSiteModalBtn = document.getElementById('close-site-modal-btn');
+      const cancelSiteModalBtn = document.getElementById('cancel-site-modal-btn');
+      const siteForm = document.getElementById('new-site-form');
+
+      openSiteModalBtn.addEventListener('click', () => siteModal.classList.remove('hidden'));
+      function closeSiteModal() { siteModal.classList.add('hidden'); siteForm.reset(); }
+      closeSiteModalBtn.addEventListener('click', closeSiteModal);
+      cancelSiteModalBtn.addEventListener('click', closeSiteModal);
+
+      siteForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newSite = {
+          id: 'site_' + Date.now(),
+          name: document.getElementById('ns-name').value.trim(),
+          type: document.getElementById('ns-type').value,
+          location: document.getElementById('ns-location').value.trim() || 'Main Site',
+          accessInfo: document.getElementById('ns-access').value.trim() || 'Standard Access',
+          directives: []
+        };
+        await DB_SERVICE.addSite(newSite);
+        activeSiteId = newSite.id;
+        closeSiteModal();
+        renderSiteList();
+        renderSiteDetail();
+      });
+
+      const hoModal = document.getElementById('handover-modal');
+      const openHoBtn = document.getElementById('open-handover-modal');
+      const closeHoBtn = document.getElementById('close-modal-btn');
+      const cancelHoBtn = document.getElementById('cancel-modal-btn');
+      const hoForm = document.getElementById('handover-form');
+
+      openHoBtn.addEventListener('click', () => {
+        const site = DB_SERVICE.data.find(s => s.id === activeSiteId);
+        if (!site) return;
+        document.getElementById('modal-site-name').textContent = site.name;
+        hoModal.classList.remove('hidden');
+      });
+
+      function closeHoModal() { hoModal.classList.add('hidden'); hoForm.reset(); }
+      closeHoBtn.addEventListener('click', closeHoModal);
+      cancelHoBtn.addEventListener('click', closeHoModal);
+
+      hoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const site = DB_SERVICE.data.find(s => s.id === activeSiteId);
+        if (!site) return;
+
+        const newDirective = {
+          id: 'd_' + Date.now(),
+          title: document.getElementById('ho-title').value.trim(),
+          category: document.getElementById('ho-category').value,
+          priority: document.getElementById('ho-priority').value,
+          rackUnit: document.getElementById('ho-location').value.trim(),
+          instruction: document.getElementById('ho-instruction').value.trim(),
+          author: DB_SERVICE.currentUser.name,
+          timestamp: getFormattedTimestamp(),
+          resolvedTimestamp: null,
+          resolvedBy: null,
+          status: 'Pending Next Visit'
+        };
+
+        await DB_SERVICE.addDirective(site.id, newDirective);
+        closeHoModal();
+        renderSiteList(document.getElementById('site-search').value);
+        renderSiteDetail();
+      });
+
+      updateRoleUI();
+      renderSiteList();
+      renderSiteDetail();
+
+      // ================= BACKGROUND CANVAS (WITH MOUSE INTERACTION & MAGNETISM) =================
+      const canvas = document.getElementById('field-network-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let width, height, dpr;
+        let nodes = [];
+        let mouse = { x: null, y: null, maxDist: 180 };
+        const nodeColors = ['#10b981', '#059669', '#0d9488', '#047857', '#64748b'];
+
+        function resize() {
+          dpr = window.devicePixelRatio || 1;
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.scale(dpr, dpr);
+          initNodes();
+        }
+
+        function initNodes() {
+          nodes = [];
+          const count = Math.floor((width * height) / 14000);
+          for (let i = 0; i < count; i++) {
+            nodes.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 0.45,
+              vy: (Math.random() - 0.5) * 0.45,
+              radius: Math.random() * 2 + 2,
+              color: nodeColors[Math.floor(Math.random() * nodeColors.length)]
+            });
+          }
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, width, height);
+
+          // 1. Draw inter-node connecting lines
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              const dx = nodes[i].x - nodes[j].x;
+              const dy = nodes[i].y - nodes[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < 140) {
+                const alpha = (1 - dist / 140) * 0.3;
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(16, 185, 129, ${alpha})`;
+                ctx.lineWidth = 1.1;
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nodes[j].x, nodes[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+
+          // 2. Draw Mouse Attraction & Magnetism
+          if (mouse.x !== null && mouse.y !== null) {
+            for (let i = 0; i < nodes.length; i++) {
+              const dx = nodes[i].x - mouse.x;
+              const dy = nodes[i].y - mouse.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+
+              if (dist < mouse.maxDist) {
+                const alpha = (1 - dist / mouse.maxDist) * 0.55;
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(5, 150, 105, ${alpha})`;
+                ctx.lineWidth = 1.4;
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+
+                // Gentle magnetic pull toward the mouse
+                nodes[i].x -= dx * 0.007;
+                nodes[i].y -= dy * 0.007;
+              }
+            }
+          }
+
+          // 3. Draw Nodes
+          for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.fill();
+
+            n.x += n.vx;
+            n.y += n.vy;
+
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+          }
+
+          requestAnimationFrame(draw);
+        }
+
+        // Active Mouse Listeners
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseleave', () => {
+          mouse.x = null;
+          mouse.y = null;
+        });
+
+        resize();
+        draw();
+      }
+    });
+  </script>
+</body>
+</html>
